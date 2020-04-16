@@ -6,6 +6,7 @@ const INITIAL_QUERY = {
   page: 0,
   order: null,
 };
+Object.freeze(INITIAL_QUERY);
 
 function reposReducer(state = [], { type, payload }) {
   switch (type) {

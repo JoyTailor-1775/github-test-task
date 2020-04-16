@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import './search-panel.scss';
 
+const INITIAL_STATE = {
+  searchReq: '',
+};
+Object.freeze(INITIAL_STATE);
+
 export default class SearchPanel extends PureComponent {
   constructor() {
     super();
@@ -18,10 +23,10 @@ export default class SearchPanel extends PureComponent {
   onSearch = (e) => {
     e.preventDefault();
     if (!this.state.searchReq) return;
-    console.log('search');
   };
 
   onSearchCancel = (e) => {
+    this.setState({ ...INITIAL_STATE });
     console.log('cancel search');
   };
   render() {
@@ -35,10 +40,14 @@ export default class SearchPanel extends PureComponent {
           maxLength="30"
         />
         <div className="controls">
-          <button className="controls__button--action" type="submit">
+          <button className="controls__button controls__button--action" type="submit">
             Search
           </button>
-          <button className="controls__button--cancel" type="reset" onClick={this.onSearchCancel}>
+          <button
+            className="controls__button controls__button--cancel"
+            type="reset"
+            onClick={this.onSearchCancel}
+          >
             X
           </button>
         </div>
