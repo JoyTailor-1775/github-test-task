@@ -17,6 +17,7 @@ export default class SearchPanel extends PureComponent {
 
   onSearch = (e) => {
     e.preventDefault();
+    if (!this.state.searchReq) return;
     console.log('search');
   };
 
