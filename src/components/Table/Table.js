@@ -1,10 +1,11 @@
 import React from 'react';
-
-// Import React Table
 import ReactTable from 'react-table';
+import { connect } from 'react-redux';
 import 'react-table/react-table.css';
 
-export default class App extends React.Component {
+import { reposActions, reposOperations } from '../../store/githubRepos';
+
+class Table extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -12,15 +13,13 @@ export default class App extends React.Component {
       pages: null,
       loading: true,
     };
-    this.fetchData = this.fetchData.bind(this);
   }
 
-  onSortTable(newSorted, column, additive) {
+  onSortTable = (newSorted, column, additive) => {
     console.log('lets do some sorting, baby', newSorted, column, additive);
-    return;
-  }
+  };
 
-  fetchData() {
+  fetchData = () => {
     this.setState({ loading: true });
 
     const testData = [
@@ -46,7 +45,7 @@ export default class App extends React.Component {
       pages: 1000,
       loading: false,
     });
-  }
+  };
   render() {
     const { data, pages, loading } = this.state;
     return (
@@ -84,3 +83,15 @@ export default class App extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  repos: state.repos,
+  query: state.query,
+});
+
+const MapDispatchToProps = {
+  getRepos: reposOperations.requestRepos,
+  updateQuery: reposActions.updateQueryRequest,
+};
+
+export default connect(mapStateToProps, MapDispatchToProps)(Table);

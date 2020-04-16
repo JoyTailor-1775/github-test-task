@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import './search-panel.scss';
+
+import { reposActions } from '../../store/githubRepos';
 
 const INITIAL_STATE = {
   searchReq: '',
 };
 Object.freeze(INITIAL_STATE);
 
-export default class SearchPanel extends PureComponent {
+class SearchPanel extends PureComponent {
   constructor() {
     super();
     this.state = {
@@ -55,3 +58,13 @@ export default class SearchPanel extends PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  query: state.query,
+});
+
+const MapDispatchToProps = {
+  updateQuery: reposActions.updateQueryRequest,
+};
+
+export default connect(mapStateToProps, MapDispatchToProps)(SearchPanel);
