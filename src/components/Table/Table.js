@@ -2,52 +2,42 @@ import React from 'react';
 import ReactTable from 'react-table';
 import { connect } from 'react-redux';
 import 'react-table/react-table.css';
-
 import { reposActions, reposOperations } from '../../store/githubRepos';
+
+import gitGubConfig from '../../configs/github';
 
 class Table extends React.Component {
   constructor() {
     super();
     this.state = {
-      data: [],
-      pages: null,
-      loading: true,
+      pageSize: 30,
     };
   }
 
-  onSortTable = (newSorted, column, additive) => {
-    console.log('lets do some sorting, baby', newSorted, column, additive);
+  fetchApiRequest = async () => {
+    await this.props.getRepos(this.props.query);
   };
 
-  fetchData = () => {
-    this.setState({ loading: true });
+  onPageChange = async (page) => {
+    await this.props.updateQuery({ page });
+    await this.fetchApiRequest();
+  };
 
-    const testData = [
-      {
-        name: 'stsft',
-        publisher: 'werwer',
-        stars: 303,
-      },
-      {
-        name: 'stsft',
-        publisher: 'werwer',
-        stars: 303,
-      },
-      {
-        name: 'stsft',
-        publisher: 'werwer',
-        stars: 303,
-      },
-    ];
-
-    this.setState({
-      data: testData,
-      pages: 1000,
-      loading: false,
+  onSortTable = async () => {
+    console.log(this.props.query.order);
+    const newOrder =
+      this.props.query.order === gitGubConfig.DESC ? gitGubConfig.ASC : gitGubConfig.DESC;
+    console.log({ newOrder });
+    await this.props.updateQuery({
+      order: newOrder,
     });
+    if (!this.props.query.name) return;
+    console.log(this.props.query);
+    await this.fetchApiRequest();
   };
+
   render() {
-    const { data, pages, loading } = this.state;
+    const { pageSize } = this.state;
     return (
       <div>
         <ReactTable
@@ -58,25 +48,34 @@ class Table extends React.Component {
               sortable: false,
             },
             {
-              Header: 'Publisher Name',
-              accessor: 'publisher',
+              Header: 'Full Name',
+              accessor: 'full_name',
               sortable: false,
             },
             {
               Header: 'Stars',
-              accessor: 'stars',
+              accessor: 'stargazers_count',
             },
           ]}
           manual
-          data={data}
-          pages={pages}
-          loading={loading}
+          data={this.props.repos.items}
+          // GitGub api allows to get only the first 1000 results for an unauthenticated user.
+          // Hence, 1000 is hard-coded here.
+          pages={Math.ceil(
+            this.props.repos.total_count
+              ? this.props.repos.total_count < 1000
+                ? this.props.total_count / this.state.pageSize
+                : 1000 / this.state.pageSize
+              : 0,
+          )}
+          loading={this.props.loading}
           sortable
-          onSortedChange={(newSorted, column, additive) => {
-            this.onSortTable(newSorted, column, additive);
-          }}
-          onFetchData={this.fetchData}
-          defaultPageSize={10}
+          resizable={false}
+          onSortedChange={this.onSortTable}
+          defaultPageSize={pageSize}
+          showPageSizeOptions={false}
+          page={this.props.query.page}
+          onPageChange={this.onPageChange}
           className="-striped -highlight"
         />
       </div>
@@ -85,8 +84,9 @@ class Table extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  repos: state.repos,
-  query: state.query,
+  repos: state.gitHub.repos,
+  query: state.gitHub.query,
+  loading: state.gitHub.loading,
 });
 
 const MapDispatchToProps = {

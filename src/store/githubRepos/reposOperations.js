@@ -7,6 +7,7 @@ const requestRepos = (params) => async (dispatch) => {
   try {
     const response = await api.getRepos(params);
     dispatch(actions.getRepos(response));
+    dispatch(actions.fetchSuccess());
   } catch (error) {
     dispatch(actions.fetchError(error.message));
   }

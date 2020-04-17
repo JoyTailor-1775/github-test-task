@@ -6,7 +6,6 @@ const INITIAL_QUERY = {
   page: 0,
   order: null,
 };
-Object.freeze(INITIAL_QUERY);
 
 function reposReducer(state = [], { type, payload }) {
   switch (type) {
@@ -18,10 +17,11 @@ function reposReducer(state = [], { type, payload }) {
   }
 }
 
-function queryRequestReducer(state = INITIAL_QUERY, { type, payload }) {
+function queryRequestReducer(state = { ...INITIAL_QUERY }, { type, payload }) {
   switch (type) {
-    case type.UPDATE_QUERY_REQUEST:
-      return { ...INITIAL_QUERY, ...payload };
+    case types.UPDATE_QUERY_REQUEST:
+      const newState = Object.assign(state, payload);
+      return newState;
 
     default:
       return INITIAL_QUERY;

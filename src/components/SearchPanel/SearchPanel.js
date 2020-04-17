@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import './search-panel.scss';
 
-import { reposActions } from '../../store/githubRepos';
+import { reposOperations, reposActions } from '../../store/githubRepos';
 
 const INITIAL_STATE = {
   searchReq: '',
@@ -23,9 +23,15 @@ class SearchPanel extends PureComponent {
     });
   };
 
-  onSearch = (e) => {
+  onSearch = async (e) => {
     e.preventDefault();
     if (!this.state.searchReq) return;
+    const params = {
+      name: this.state.searchReq,
+      page: 0,
+    };
+    await this.props.updateQuery(params);
+    await this.props.getRepos(this.props.query);
   };
 
   onSearchCancel = (e) => {
@@ -60,10 +66,12 @@ class SearchPanel extends PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  query: state.query,
+  query: state.gitHub.query,
+  repos: state.gitHub.repos,
 });
 
 const MapDispatchToProps = {
+  getRepos: reposOperations.requestRepos,
   updateQuery: reposActions.updateQueryRequest,
 };
 

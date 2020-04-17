@@ -19,9 +19,14 @@ const fetchError = (error) => ({
   payload: error,
 });
 
+const fetchSuccess = () => ({
+  type: types.FETCH_SUCCESS,
+});
+
 export default {
   getRepos,
   updateQueryRequest,
   fetchRequest,
   fetchError,
+  fetchSuccess,
 };
