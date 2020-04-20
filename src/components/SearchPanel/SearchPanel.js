@@ -27,7 +27,7 @@ class SearchPanel extends PureComponent {
     e.preventDefault();
     if (!this.state.searchReq) return;
     const params = {
-      name: this.state.searchReq,
+      name: this.state.searchReq.trim(),
       page: 0,
     };
     await this.props.updateQuery(params);
@@ -36,7 +36,6 @@ class SearchPanel extends PureComponent {
 
   onSearchCancel = (e) => {
     this.setState({ ...INITIAL_STATE });
-    console.log('cancel search');
   };
   render() {
     return (

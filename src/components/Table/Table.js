@@ -24,15 +24,12 @@ class Table extends React.Component {
   };
 
   onSortTable = async () => {
-    console.log(this.props.query.order);
     const newOrder =
       this.props.query.order === gitGubConfig.DESC ? gitGubConfig.ASC : gitGubConfig.DESC;
-    console.log({ newOrder });
     await this.props.updateQuery({
       order: newOrder,
     });
     if (!this.props.query.name) return;
-    console.log(this.props.query);
     await this.fetchApiRequest();
   };
 
