@@ -21,12 +21,12 @@ const getUsedStorage = () => {
 };
 
 // Deletes the oldest row in the LocalStorage
-const deleteTheOldestRow = () => {
+export const deleteTheOldestRow = () => {
   localStorage.removeItem(localStorage.key(0));
 };
 
 // Normalizes incoming data for storing
-const normalize = (data) => {
+export const normalize = (data) => {
   const normalizedItems = data.items.map((el) => {
     return { name: el.name, full_name: el.full_name, stargazers_count: el.stargazers_count };
   });
