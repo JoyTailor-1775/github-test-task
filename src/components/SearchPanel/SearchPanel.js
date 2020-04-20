@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import './search-panel.scss';
 
 import { reposOperations, reposActions } from '../../store/githubRepos';
 
+const cancelToken = axios.CancelToken;
 const INITIAL_STATE = {
   searchReq: '',
 };
@@ -14,6 +16,7 @@ class SearchPanel extends PureComponent {
     super();
     this.state = {
       searchReq: '',
+      call: cancelToken.source(),
     };
   }
 
@@ -26,16 +29,26 @@ class SearchPanel extends PureComponent {
   onSearch = async (e) => {
     e.preventDefault();
     if (!this.state.searchReq) return;
+    // Creates new cancel token for a new request
+    const newCallSource = cancelToken.source();
+    this.setState({
+      call: newCallSource,
+    });
     const params = {
       name: this.state.searchReq.trim(),
       page: 0,
     };
     await this.props.updateQuery(params);
-    await this.props.getRepos(this.props.query);
+    await this.props.getRepos(this.props.query, this.state.call);
   };
 
-  onSearchCancel = (e) => {
+  onSearchCancel = async (e) => {
     this.setState({ ...INITIAL_STATE });
+    await this.props.updateQuery({
+      name: '',
+      page: 0,
+    });
+    this.state.call.cancel('Cancelled by user...');
   };
   render() {
     return (

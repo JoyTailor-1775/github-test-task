@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as proxy from './cachingProxy';
 
-export const getRepos = async ({ name, page, order }) => {
+export const getRepos = async ({ name, page, order }, callEntity) => {
   // Creates query, depending on incoming parameters.
   const BASE_QUERY = `https://api.github.com/search/repositories?q=${name}&page=${
     page + 1
@@ -18,22 +18,27 @@ export const getRepos = async ({ name, page, order }) => {
   }
 
   // Requests a new data from git-hub api.
-  const response = await axios
-    .get(query)
-    .then((response) => {
-      return response.data;
+  return await axios
+    .get(query, {
+      cancelToken: callEntity.token,
     })
-    .catch((error) => {
-      console.error('GitHub API error: ', error);
+    .then((response) => {
+      // Tries to save the api response into the LocalStorage, wether succeeded
+      // or not, returns new response to app.
+      try {
+        proxy.setItem(query, response.data);
+      } catch (error) {
+        console.error('LocalStorage error: ', error);
+      } finally {
+        return response.data;
+      }
+    })
+    .catch((exeption) => {
+      if (axios.isCancel(exeption)) {
+        console.log(exeption.message);
+        return;
+      } else {
+        console.error('GitHub API error: ', exeption);
+      }
     });
-
-  // Tries to save the api response into the LocalStorage, wether succeeded
-  // or not, returns new response to app.
-  try {
-    proxy.setItem(query, response);
-  } catch (error) {
-    console.error('LocalStorage error: ', error);
-  } finally {
-    return response;
-  }
 };
