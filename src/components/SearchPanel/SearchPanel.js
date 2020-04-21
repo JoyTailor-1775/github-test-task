@@ -42,7 +42,7 @@ class SearchPanel extends PureComponent {
     await this.props.getRepos(this.props.query, this.state.call);
   };
 
-  onSearchCancel = async (e) => {
+  onSearchCancel = async () => {
     this.setState({ ...INITIAL_STATE });
     await this.props.updateQuery({
       name: '',

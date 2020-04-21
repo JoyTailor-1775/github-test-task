@@ -36,7 +36,6 @@ export const getRepos = async ({ name, page, order }, callEntity) => {
     .catch((exeption) => {
       if (axios.isCancel(exeption)) {
         console.log(exeption.message);
-        return;
       } else {
         console.error('GitHub API error: ', exeption);
       }

@@ -26,7 +26,7 @@ export const deleteTheOldestRow = () => {
 };
 
 // Normalizes incoming data for storing
-export const normalize = (data) => {
+const normalize = (data) => {
   const normalizedItems = data.items.map((el) => {
     return { name: el.name, full_name: el.full_name, stargazers_count: el.stargazers_count };
   });
@@ -53,7 +53,7 @@ export const setItem = async (query, data) => {
   // rows in the LocalStorage are deleted, unless there is enough space to store the
   // incoming data.
   try {
-    const remainingSize = (await getAvailableStorage()) - (await getUsedStorage());
+    const remainingSize = (await getAvailableStorage()) - getUsedStorage();
     while (dataSize >= remainingSize) {
       deleteTheOldestRow();
     }
