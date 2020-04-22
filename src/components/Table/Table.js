@@ -6,7 +6,7 @@ import { reposActions, reposOperations } from '../../store/githubRepos';
 
 import gitGubConfig from '../../configs/github';
 
-export class Table extends React.Component {
+class Table extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -15,7 +15,7 @@ export class Table extends React.Component {
   }
 
   fetchApiRequest = async () => {
-    await this.props.getRepos(this.props.query);
+    await this.props.getRepos(this.props.query, this.props.cancelToken);
   };
 
   onPageChange = async (page) => {
@@ -84,6 +84,7 @@ const mapStateToProps = (state) => ({
   repos: state.gitHub.repos,
   query: state.gitHub.query,
   loading: state.gitHub.loading,
+  cancelToken: state.gitHub.cancelToken,
 });
 
 const MapDispatchToProps = {

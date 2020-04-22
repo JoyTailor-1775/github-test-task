@@ -23,10 +23,16 @@ const fetchSuccess = () => ({
   type: types.FETCH_SUCCESS,
 });
 
+const changeCancelToken = (token) => ({
+  type: types.CHANGE_CANCEL_TOKEN,
+  payload: token,
+});
+
 export default {
   getRepos,
   updateQueryRequest,
   fetchRequest,
   fetchError,
   fetchSuccess,
+  changeCancelToken,
 };

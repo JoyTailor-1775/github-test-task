@@ -11,13 +11,16 @@ const INITIAL_STATE = {
 };
 Object.freeze(INITIAL_STATE);
 
-export class SearchPanel extends PureComponent {
+class SearchPanel extends PureComponent {
   constructor() {
     super();
     this.state = {
       searchReq: '',
-      call: cancelToken.source(),
     };
+  }
+
+  componentDidMount() {
+    this.props.changeCancelToken(cancelToken.source());
   }
 
   onChange = (e) => {
@@ -30,16 +33,13 @@ export class SearchPanel extends PureComponent {
     e.preventDefault();
     if (!this.state.searchReq) return;
     // Creates new cancel token for a new request
-    const newCallSource = cancelToken.source();
-    this.setState({
-      call: newCallSource,
-    });
+    this.props.changeCancelToken(cancelToken.source());
     const params = {
       name: this.state.searchReq.trim(),
       page: 0,
     };
     await this.props.updateQuery(params);
-    await this.props.getRepos(this.props.query, this.state.call);
+    await this.props.getRepos(this.props.query, this.props.cancelToken);
   };
 
   onSearchCancel = async () => {
@@ -48,7 +48,7 @@ export class SearchPanel extends PureComponent {
       name: '',
       page: 0,
     });
-    this.state.call.cancel('Cancelled by user...');
+    this.props.cancelToken.cancel('Cancelled by user...');
   };
   render() {
     return (
@@ -80,11 +80,13 @@ export class SearchPanel extends PureComponent {
 const mapStateToProps = (state) => ({
   query: state.gitHub.query,
   repos: state.gitHub.repos,
+  cancelToken: state.gitHub.cancelToken,
 });
 
 const MapDispatchToProps = {
   getRepos: reposOperations.requestRepos,
   updateQuery: reposActions.updateQueryRequest,
+  changeCancelToken: reposActions.changeCancelToken,
 };
 
 export default connect(mapStateToProps, MapDispatchToProps)(SearchPanel);

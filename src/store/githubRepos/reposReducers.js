@@ -55,9 +55,20 @@ function errorReducer(state = null, { type, payload }) {
   }
 }
 
+function cancelToken(state = null, { type, payload }) {
+  switch (type) {
+    case types.CHANGE_CANCEL_TOKEN:
+      return payload;
+
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   loading: loadingReducer,
   error: errorReducer,
   repos: reposReducer,
   query: queryRequestReducer,
+  cancelToken: cancelToken,
 });

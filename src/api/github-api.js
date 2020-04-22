@@ -18,7 +18,7 @@ export const getRepos = async ({ name, page, order }, callEntity) => {
   }
 
   // Requests a new data from git-hub api.
-  return await axios
+  const res = await axios
     .get(query, {
       cancelToken: callEntity.token,
     })
@@ -40,4 +40,6 @@ export const getRepos = async ({ name, page, order }, callEntity) => {
         console.error('GitHub API error: ', exeption);
       }
     });
+
+  return res;
 };
