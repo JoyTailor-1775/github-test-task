@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 };
 Object.freeze(INITIAL_STATE);
 
-class SearchPanel extends PureComponent {
+export class SearchPanel extends PureComponent {
   constructor() {
     super();
     this.state = {

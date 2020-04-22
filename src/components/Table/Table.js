@@ -6,7 +6,7 @@ import { reposActions, reposOperations } from '../../store/githubRepos';
 
 import gitGubConfig from '../../configs/github';
 
-class Table extends React.Component {
+export class Table extends React.Component {
   constructor() {
     super();
     this.state = {
